@@ -67,15 +67,53 @@ class StructuredDataCompiler(SourceCompiler):
 
         return cleaner.clean_image(data.get("image"), default="")[0] or None
 
+    def _url_from_json(self, content: str) -> str | None:
+        try:
+            data: Any = json.loads(content)
+        except json.JSONDecodeError:
+            return None
+
+        if isinstance(data, list):
+            data = next((item for item in data if isinstance(item, dict)), None)
+        if not isinstance(data, dict):
+            return None
+
+        for key in ("url", "@id"):
+            value = data.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+
+        main_entity = data.get("mainEntityOfPage")
+        if isinstance(main_entity, str) and main_entity.strip():
+            return main_entity.strip()
+        if isinstance(main_entity, dict):
+            for key in ("url", "@id", "@type"):
+                value = main_entity.get(key)
+                if isinstance(value, str) and value.strip() and key != "@type":
+                    return value.strip()
+
+        same_as = data.get("sameAs")
+        if isinstance(same_as, str) and same_as.strip():
+            return same_as.strip()
+        if isinstance(same_as, list):
+            for item in same_as:
+                if isinstance(item, str) and item.strip():
+                    return item.strip()
+
+        return None
+
     async def compile(self) -> OpenAICompiledSource | None:
         content = self.content or ""
         image_url: str | None = None
+        org_url: str | None = None
 
         if _looks_like_json(content):
             image_url = self._image_from_json(content)
+            org_url = self._url_from_json(content)
         elif _looks_like_html(content):
             image_url = find_image(self.soup)
             content = self.soup.get_text(separator="\n", strip=True) + extract_json_ld_data_from_html(self.soup)
+            # the page URL itself is the source URL; compilers keep ctx.input.url separately
 
         content = content.strip()
         if not content:
@@ -86,4 +124,5 @@ class StructuredDataCompiler(SourceCompiler):
             content=content,
             language=None,
             image_url=image_url,
+            org_url=org_url,
         )

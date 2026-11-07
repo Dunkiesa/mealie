@@ -112,6 +112,35 @@ def clean_string(text: str | list | int | float) -> str:
     return cleaned_text
 
 
+_IMAGE_URL_KEYS = ("url", "contentUrl", "contentURL", "thumbnailUrl", "thumbnail", "@id")
+
+
+def _collect_image_urls(image: typing.Any) -> list[str]:
+    """Recursively collect image URL strings from the many shapes schema.org uses."""
+    if not image:
+        return []
+
+    if isinstance(image, str):
+        return [image.strip()] if image.strip() else []
+
+    if isinstance(image, dict):
+        for key in _IMAGE_URL_KEYS:
+            if key in image:
+                return _collect_image_urls(image[key])
+        if "image" in image:
+            return _collect_image_urls(image["image"])
+        return []
+
+    if isinstance(image, list):
+        collected: list[str] = []
+        for item in image:
+            collected.extend(_collect_image_urls(item))
+        return collected
+
+    logger.debug(f"Unexpected type for image: {type(image)}, {image}")
+    return []
+
+
 def clean_image(image: str | list | dict | None = None, default: str = NO_IMAGE) -> list[str]:
     """
     image attempts to parse the image field from a recipe and return a string. Currenty
@@ -128,24 +157,8 @@ def clean_image(image: str | list | dict | None = None, default: str = NO_IMAGE)
     Returns:
         list[str]: list of urls, or [default] if input is empty
     """
-    if not image:
-        return [default]
-
-    match image:
-        case str(image):
-            return [image]
-        case [str(_), *_]:
-            # Only return non-null strings in list
-            return [x for x in image if x]
-        case [{"url": str(_)}, *_]:
-            return [x["url"] for x in image if "url" in x]
-        case {"url": str(image)}:
-            return [image]
-        case [{"@id": str(_)}, *_]:
-            return [x["@id"] for x in image if "@id" in x]
-        case _:
-            logger.exception(f"Unexpected type for image: {type(image)}, {image}")
-            return [default]
+    urls = _collect_image_urls(image)
+    return urls if urls else [default]
 
 
 def is_how_to_section(entry: typing.Any) -> bool:

@@ -88,5 +88,5 @@ def to_recipe(ctx: WorkflowContext, openai_recipe: OpenAIRecipe) -> Recipe:
         nutrition=convert_nutrition(openai_recipe),
         # uploaded images take precedence, and are attached to the recipe after it's created
         image=None if ctx.input.images else compiled and compiled.image_url,
-        org_url=ctx.input.url,
+        org_url=ctx.input.url or (compiled.org_url if compiled else None),
     )

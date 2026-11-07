@@ -36,3 +36,8 @@ class OpenAICompiledSource(OpenAIBase):
         None,
         description="URL of the recipe's image, but only if one appears in the source. Never guess a URL.",
     )
+
+    org_url: str | None = Field(
+        None,
+        description="Source URL of the recipe, but only if one appears in the source. Never guess a URL.",
+    )
