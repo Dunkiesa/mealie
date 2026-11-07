@@ -22,16 +22,20 @@ class OpenAIRecipeInstruction(OpenAIBase):
         "multiple steps logically grouped together. Skip if it groups all steps.",
     )
 
-    summary: str | None = Field(
-        None,
-        description="A summary of the step actions. Keep to one sentence with 8 words or fewer.",
-    )
-
     text: str = Field(
         ...,
         description=(
             "One instruction step. Do not include numeric prefixes like '1.' or 'Step 1', "
             "but do include word-based prefixes like 'First' or 'Second'."
+        ),
+    )
+
+    summary: str | None = Field(
+        None,
+        description=(
+            "A short headline for this step, at most 8 words, that captures the action (e.g. "
+            "'Brown the onions' or 'Bake until golden'). It must NOT repeat or paraphrase the "
+            "step text. Leave it blank if no concise headline fits."
         ),
     )
 
