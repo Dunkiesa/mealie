@@ -130,6 +130,7 @@ class CompileSourceStep(WorkflowStep):
             content="\n\n".join(contents),
             language=next((document.compiled.language for document in usable if document.compiled.language), None),
             image_url=next((document.compiled.image_url for document in usable if document.compiled.image_url), None),
+            org_url=next((document.compiled.org_url for document in usable if document.compiled.org_url), None),
         )
 
     async def run(self, ctx: WorkflowContext) -> None:
