@@ -307,7 +307,7 @@ class RecipeScraperPackage(ABCScraperStrategy):
         try:
             # scrape_html requires a URL, but we might not have one, so we default to a dummy URL
             scraped_schema = scrape_html(recipe_html, org_url=self.url or "https://example.com", supported_only=False)
-        except NoSchemaFoundInWildMode, AttributeError:
+        except (NoSchemaFoundInWildMode, AttributeError):
             self.logger.error(f"Recipe Scraper was unable to extract a recipe from {self.url}")
             return None
 
@@ -467,7 +467,7 @@ class RecipeScraperOpenAITranscription(ABCScraperStrategy):
                 if ingredient.text
             ],
             recipe_instructions=[
-                RecipeStep(title=instruction.title, text=instruction.text)
+                RecipeStep(title=instruction.title, summary=instruction.summary, text=instruction.text)
                 for instruction in response.instructions
                 if instruction.text
             ],

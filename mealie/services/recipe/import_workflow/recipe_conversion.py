@@ -80,7 +80,7 @@ def to_recipe(ctx: WorkflowContext, openai_recipe: OpenAIRecipe) -> Recipe:
             if ingredient.text
         ],
         recipe_instructions=[
-            RecipeStep(title=instruction.title, text=instruction.text)
+            RecipeStep(title=instruction.title, summary=instruction.summary, text=instruction.text)
             for instruction in openai_recipe.instructions
             if instruction.text
         ],

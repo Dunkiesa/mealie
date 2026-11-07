@@ -18,7 +18,13 @@ class OpenAIRecipeIngredient(OpenAIBase):
 class OpenAIRecipeInstruction(OpenAIBase):
     title: str | None = Field(
         None,
-        description="Instruction section title. Only set on the first step in each section.",
+        description="Instruction section title. Only set on the first step in each section and for "
+        "multiple steps logically grouped together. Skip if it groups all steps.",
+    )
+
+    summary: str | None = Field(
+        None,
+        description="A summary of the step actions. Keep to one sentence with 8 words or fewer.",
     )
 
     text: str = Field(

@@ -66,7 +66,7 @@ class TranslateRecipeStep(WorkflowStep):
                 if ingredient.display
             ],
             instructions=[
-                OpenAIRecipeInstruction(title=step.title, text=step.text)
+                OpenAIRecipeInstruction(title=step.title, summary=step.summary, text=step.text)
                 for step in recipe.recipe_instructions or []
                 if step.text
             ],

@@ -44,6 +44,7 @@ export interface OpenAIRecipeIngredient {
 }
 export interface OpenAIRecipeInstruction {
   title?: string | null;
+  summary?: string | null;
   text: string;
 }
 export interface OpenAIRecipeNotes {
