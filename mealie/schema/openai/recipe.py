@@ -18,8 +18,12 @@ class OpenAIRecipeIngredient(OpenAIBase):
 class OpenAIRecipeInstruction(OpenAIBase):
     title: str | None = Field(
         None,
-        description="Instruction section title. Only set on the first step in each section and for "
-        "multiple steps logically grouped together. Skip if it groups all steps.",
+        description=(
+            "Section heading for a group of steps, only when the source explicitly groups steps under a "
+            "heading (e.g. 'Make the sauce', 'For the dough'). Set on the first step of that group only "
+            "and leave blank on the rest. Must be a short heading (a few words), never the step text. "
+            "Leave blank if the source has no explicit section headings."
+        ),
     )
 
     text: str = Field(

@@ -6,7 +6,7 @@ When converting:
 - Do not translate. Preserve the source's original language in every text field.
 - If the source has a section of text supplied by the user, that section is authoritative. Where it disagrees with the rest of the source, follow it: if it names the recipe, use their name; if it corrects or adds a detail, use theirs.
 - Keep ingredients and instructions in their original order.
-- Preserve section headings by setting the title on the first ingredient or instruction of each section, and leaving it blank on the rest.
+- Preserve section headings by setting the title on the first ingredient or instruction of each section, and leaving it blank on the rest. A title is a short heading (a few words) taken from an explicit section heading in the source. Never copy or paraphrase a step's text into the title, and never set a title on every step. If the source has no explicit section headings, leave every title blank.
 - Keep each ingredient as a single line of text, exactly as written, e.g. "2 cups of onions, chopped".
 - If a recipe does not contain an explicit list of ingredients, collect and extract the ingredients directly from the instructions.
 - When the source already presents its instructions as discrete steps, keep those steps as they are. Do not split or merge them.

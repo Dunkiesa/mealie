@@ -5,4 +5,5 @@ Do not create or make up any information. If insufficient data is found, return 
 - The video transcript is the primary source for instructions.
 - The caption text is the primary source for the ingredient list and title.
 - If there is a conflict (e.g., caption says "1 cup" but transcript says "1.5 cups"), trust the video transcript.
+- Only set an instruction's `title` for an explicit section heading from the source; it must be a short heading, never the step text, and blank otherwise.
 - For each instruction, also provide a short headline in the `summary` field: at most 8 words capturing the action. The headline must not repeat or paraphrase the step text. Leave it blank if no concise headline fits.

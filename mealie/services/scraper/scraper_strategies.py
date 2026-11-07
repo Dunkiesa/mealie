@@ -26,6 +26,10 @@ from mealie.services.recipe.import_workflow import (
     WorkflowInput,
     WorkflowOptions,
 )
+from mealie.services.recipe.import_workflow.recipe_conversion import (
+    _sanitize_instruction_summary,
+    _sanitize_instruction_title,
+)
 from mealie.services.scraper.scraped_extras import ScrapedExtras
 
 from . import cleaner
@@ -467,7 +471,11 @@ class RecipeScraperOpenAITranscription(ABCScraperStrategy):
                 if ingredient.text
             ],
             recipe_instructions=[
-                RecipeStep(title=instruction.title, summary=instruction.summary, text=instruction.text)
+                RecipeStep(
+                    title=_sanitize_instruction_title(instruction.title, instruction.text) or "",
+                    summary=_sanitize_instruction_summary(instruction.summary, instruction.text) or "",
+                    text=instruction.text,
+                )
                 for instruction in response.instructions
                 if instruction.text
             ],

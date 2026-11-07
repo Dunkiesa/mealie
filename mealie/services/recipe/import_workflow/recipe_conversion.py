@@ -11,6 +11,34 @@ from mealie.services.scraper import cleaner
 
 from .context import WorkflowContext
 
+
+def _sanitize_instruction_title(title: str | None, text: str) -> str | None:
+    """Drop titles that are really just the step text (or too long to be a heading)."""
+    if not title:
+        return None
+    cleaned = title.strip()
+    if not cleaned:
+        return None
+    if len(cleaned.split()) > 6:
+        return None
+    if cleaned.casefold() in text.casefold() or text.casefold() in cleaned.casefold():
+        return None
+    return cleaned
+
+
+def _sanitize_instruction_summary(summary: str | None, text: str) -> str | None:
+    """Drop summaries that echo the step text (or are too long to be a headline)."""
+    if not summary:
+        return None
+    cleaned = summary.strip()
+    if not cleaned:
+        return None
+    if len(cleaned.split()) > 8:
+        return None
+    if cleaned.casefold() in text.casefold() or text.casefold() in cleaned.casefold():
+        return None
+    return cleaned
+
 DEFAULT_RECIPE_NAME_KEY = "recipe.recipe-defaults.name"
 DEFAULT_RECIPE_NAME = "New Recipe"
 DEFAULT_RECIPE_SLUG = "new-recipe"
@@ -80,7 +108,11 @@ def to_recipe(ctx: WorkflowContext, openai_recipe: OpenAIRecipe) -> Recipe:
             if ingredient.text
         ],
         recipe_instructions=[
-            RecipeStep(title=instruction.title, summary=instruction.summary, text=instruction.text)
+            RecipeStep(
+                title=_sanitize_instruction_title(instruction.title, instruction.text) or "",
+                summary=_sanitize_instruction_summary(instruction.summary, instruction.text) or "",
+                text=instruction.text,
+            )
             for instruction in openai_recipe.instructions
             if instruction.text
         ],
